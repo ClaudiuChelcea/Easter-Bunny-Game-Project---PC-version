@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{78A58412-D65C-99BB-C4E7-6392A0E3E244}</ProjectGuid>
+    <ProjectGuid>{CEA824E9-29EA-6D12-E9C6-E4EE5145DFDF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.Mobile.AndroidLogcat.Editor</AssemblyName>
@@ -698,19 +698,19 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{0DB72F30-1319-AC56-3FE3-5B7A3BFDC58C}</Project>
+      <Project>{FB4A95FB-CCD5-C5ED-6456-2B5E3B95A377}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{DD67E5C2-DED3-21D3-2EE1-B836D30F4D7D}</Project>
+      <Project>{62CE7AE8-7E7F-8C94-05F3-F9325890F07D}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{D383A4AC-19B9-BD51-AE21-5B66D3B54A2E}</Project>
+      <Project>{DA7037C4-4307-DE05-9BC3-BB48FDBC5437}</Project>
       <Name>UnityEngine.TestRunner</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
-      <Project>{8DC1F313-17C3-D09C-9A19-301AFDD196AE}</Project>
+      <Project>{405A9A12-7FB9-8E33-9546-B18EFBCD4DC7}</Project>
       <Name>UnityEditor.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
