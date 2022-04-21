@@ -45,6 +45,9 @@ public class PlayerMovement : MonoBehaviour
 	private SpriteRenderer playerSprite;
 	private Animator playerAnimator;
 
+	// Score
+	public int playerScore = 0;
+
 	// Get components
 	private void Awake()
 	{
@@ -173,6 +176,12 @@ public class PlayerMovement : MonoBehaviour
 		if(collision.gameObject.tag == "Ground")
 		{
 			boolJumping = false;
+		}
+
+		if(collision.gameObject.tag == "Carrot")
+		{
+			Destroy(collision.gameObject);
+			++playerScore;
 		}
 	}
 
