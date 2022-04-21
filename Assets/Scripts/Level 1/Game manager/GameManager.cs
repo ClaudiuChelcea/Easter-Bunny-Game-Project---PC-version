@@ -24,13 +24,17 @@ public class GameManager : MonoBehaviour
 	public TextMeshProUGUI egg1Text;
 	public TextMeshProUGUI egg2Text;
 	public TextMeshProUGUI egg3Text;
+	public TextMeshProUGUI totalEggsText;
 	public GameObject EGG1, EGG2, EGG3;
+	public GameObject lose_menu, win_menu;
+	public TextMeshProUGUI carrotsAnswer, carrotsAnswer2;
 
 	// Variables
 	int egg1Seconds = (int) EggsLife.egg1;
 	int egg2Seconds = (int) EggsLife.egg2;
 	int egg3Seconds = (int) EggsLife.egg3;
 	private int count_eggs_received = 3;
+	private int nr_carrots_per_level = 3;
 
 	// Variables
 	bool gameIsPaused = false;
@@ -50,6 +54,27 @@ public class GameManager : MonoBehaviour
 		time_spent_in_level += 1;
 	}
 
+	// Check win
+	void win()
+	{
+		if(player.playerScore == nr_carrots_per_level)
+		{
+			Time.timeScale = 0;
+			gameIsPaused = true;
+			gameMusic.Pause();
+			win_menu.active = true;
+			carrotsAnswer2.text = "Got " + player.playerScore.ToString() + " carrots!";
+			if(count_eggs_received < 3)
+			{
+				totalEggsText.color = Color.yellow;
+			} else
+			{
+				totalEggsText.color = Color.green;
+			}
+			totalEggsText.text = "Got rating " + count_eggs_received.ToString() + "!";
+		}
+	}	
+
 	// Awake
 	private void Awake()
 	{
@@ -58,6 +83,7 @@ public class GameManager : MonoBehaviour
 		egg1Text.text = ((int) EggsLife.egg1).ToString() + "s";
 		egg2Text.text = ((int)EggsLife.egg2).ToString() + "s";
 		egg3Text.text = ((int)EggsLife.egg3).ToString() + "s";
+		Time.timeScale = 1;
 	}
 
 	// Start
@@ -67,6 +93,8 @@ public class GameManager : MonoBehaviour
 		gameMusic.PlayOneShot(get_audio);
 		pause_menu.active = false;
 		StartCoroutine(time());
+		lose_menu.active = false;
+		win_menu.active = false;
 	}
 
 	// Update
@@ -76,6 +104,7 @@ public class GameManager : MonoBehaviour
 		check_pause();
 		update_score();
 		modify_eggs();
+		win();
 	}
 
 	// Modify text colors based on seconds left
@@ -130,7 +159,11 @@ public class GameManager : MonoBehaviour
 	// Lose game
 	private void loseLevel()
 	{
-
+		Time.timeScale = 0;
+		gameIsPaused = true;
+		gameMusic.Pause();
+		lose_menu.active = true;
+		carrotsAnswer.text = "Got " + player.playerScore.ToString() + " carrots!";
 	}
 
 	// CD for energy bar
@@ -143,7 +176,10 @@ public class GameManager : MonoBehaviour
 			float cd = player.startRegeneratingEnergyTime - player.timeUntilStartRegeneratingEnergy;
 			if (cd < 0f)
 				cd = 0f;
-			energyCD.text = "Regen in: " + (cd).ToString("F2");
+			if (cd == 0f)
+				energyCD.text = "Regenerating...";
+			else
+				energyCD.text = "Regen in: " + (cd).ToString("F2");
 
 			if (cd < 0.5f)
 			{

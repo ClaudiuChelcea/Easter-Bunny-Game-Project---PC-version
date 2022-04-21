@@ -23,12 +23,9 @@ public class PlayerMovement : MonoBehaviour
 	private float default_speed = 0f;
 
 	// Jump
-	[SerializeField] private bool boolJumping = false;
+	[SerializeField] private bool boolGrounded = true;
 	[SerializeField] private float playerJumpForce = 0f;
-	[SerializeField] private float playerJumpReset = 0f;
-	[SerializeField] private float jumpResetTimer = 0f;
 	public GameObject ground;
-	private bool playerTouchesTheGroud = true;
 	const float DISTANCE_TO_GROUND = 1.3f;
 
 	// Energy
@@ -40,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
 	public float timeUntilStartRegeneratingEnergy = 0f;
 	public TextMeshProUGUI notEnoughEnergyError;
 	public Vector3 position_to_player;
+	[SerializeField] private float CarrotEnergy;
 
 	// Animations
 	private SpriteRenderer playerSprite;
@@ -58,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
 		energySlider.value = playerEnergy;
 		default_speed = speed;
 		notEnoughEnergyError.alpha = 0f;
+		boolGrounded = true;
 	}
 	
 	// Face the walking direction
@@ -84,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
 			timeUntilStartRegeneratingEnergy += Time.deltaTime;
 		}
 		
-		if(boolRunning == true || boolJumping == true)
+		if(boolRunning == true || boolGrounded == false)
 		{
 			timeUntilStartRegeneratingEnergy = 0f;
 		}
@@ -110,22 +109,21 @@ public class PlayerMovement : MonoBehaviour
 		body.velocity = new Vector2(horizontalMovementInput * speed, body.velocity.y);
 
 		// Jump
-		playerJumpReset += Time.deltaTime;
-		if ((Input.GetKey(KeyCode.Space) == true || Input.GetKey(KeyCode.W) == true) && boolJumping == false)
+		if ((Input.GetKey(KeyCode.Space) == true || Input.GetKey(KeyCode.W) == true) && boolGrounded == true)
 		{
-			if(playerEnergy < energyConsumptionPerJump)
+			if (playerEnergy <= energyConsumptionPerJump)
 			{
-				not_enough_energy("Jump");
-				goto skip;
+				StartCoroutine(not_enough_energy("Jump"));
+				boolGrounded = true;
 			}
-			body.velocity = new Vector2(body.velocity.x, playerJumpForce);
-			playerAnimator.SetTrigger("Jumping");
-			boolJumping = true;
-			playerJumpReset = 0f;
-			playerEnergy -= energyConsumptionPerJump;
+			else
+			{
+				body.velocity = new Vector2(body.velocity.x, playerJumpForce);
+				playerAnimator.SetTrigger("Jumping");
+				boolGrounded = false;
+				playerEnergy -= energyConsumptionPerJump;
+			}
 		}
-
-		skip:
 
 		// Remove energy when running
 		if(boolRunning == true)
@@ -133,21 +131,24 @@ public class PlayerMovement : MonoBehaviour
 			playerEnergy -= Time.deltaTime * energyConsumptionPerSprint;
 		}
 
+		// Display no energy
+		if(playerEnergy <= 0f && horizontalMovementInput != 0)
+		{
+			StartCoroutine(not_enough_energy("Run"));
+		}
+
 		// Change energy slider
 		energySlider.value = playerEnergy;
-
-		// Check if we are touching the ground
-		playerTouchesTheGroud = (this.transform.position.y - ground.transform.position.y) < DISTANCE_TO_GROUND;
-
-		// Move energy error with the player
-		notEnoughEnergyError.transform.position = this.transform.position + position_to_player;
 	}
 
 	// No enough energy error
-	private void not_enough_energy(string type_of_action)
+	IEnumerator not_enough_energy(string type_of_action)
 	{
 		notEnoughEnergyError.alpha = 1;
 		notEnoughEnergyError.text = "Not enough energy to " + type_of_action.ToLower() + "!";
+		
+		yield return new WaitForSeconds(2);
+		notEnoughEnergyError.alpha = 0;
 	}
 
 	// Movement & facing direction
@@ -161,13 +162,7 @@ public class PlayerMovement : MonoBehaviour
 	private void animations()
 	{
 		playerAnimator.SetBool("Run", boolRunning);
-
-		if (playerTouchesTheGroud)
-		{
-			playerAnimator.SetFloat("JumpReset", 0f);
-			playerJumpReset = 1f;
-		}
-		playerAnimator.SetBool("Grounded", playerTouchesTheGroud);
+		playerAnimator.SetBool("Grounded", boolGrounded);
 	}
 
 	// Check ground collision
@@ -175,13 +170,20 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if(collision.gameObject.tag == "Ground")
 		{
-			boolJumping = false;
+			boolGrounded = true;
 		}
+	}
 
+	// Triggers
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
 		if(collision.gameObject.tag == "Carrot")
 		{
 			Destroy(collision.gameObject);
 			++playerScore;
+			playerEnergy = (playerEnergy + CarrotEnergy);
+			if (playerEnergy > 1f)
+				playerEnergy = 1f;
 		}
 	}
 
