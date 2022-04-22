@@ -60,6 +60,7 @@
     <Compile Include="Assets\Scripts\Level 1\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuGameManager.cs" />
     <Compile Include="Assets\Scripts\Level 1\Pickup\CarrotScript.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
