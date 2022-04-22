@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 	public PlayerMovement player;
 	public TextMeshProUGUI energyCD;
 	public AudioClip get_audio;
-	private AudioSource gameMusic;
+	private AudioSource gameMusic, winSound;
 	public GameObject pause_menu;
 	public TextMeshProUGUI score;
 	public TextMeshProUGUI egg1Text;
@@ -27,7 +27,8 @@ public class GameManager : MonoBehaviour
 	public TextMeshProUGUI totalEggsText;
 	public GameObject EGG1, EGG2, EGG3;
 	public GameObject lose_menu, win_menu;
-	public TextMeshProUGUI carrotsAnswer, carrotsAnswer2;
+	public TextMeshProUGUI carrotsAnswer, carrotsAnswer2, carrots_needed_to_finish;
+	public AudioClip win_sound, lose_sound;
 
 	// Variables
 	int egg1Seconds = (int) EggsLife.egg1;
@@ -35,6 +36,8 @@ public class GameManager : MonoBehaviour
 	int egg3Seconds = (int) EggsLife.egg3;
 	private int count_eggs_received = 3;
 	private int nr_carrots_per_level = 3;
+	bool won = false;
+	bool lost = false;
 
 	// Variables
 	bool gameIsPaused = false;
@@ -57,23 +60,29 @@ public class GameManager : MonoBehaviour
 	// Check win
 	void win()
 	{
-		if(player.playerScore == nr_carrots_per_level)
+		if (won)
+			return;
+
+		if (player.playerScore == nr_carrots_per_level && player.is_at_the_exit == true)
 		{
+			won = true;
+			winSound.PlayOneShot(win_sound);
 			Time.timeScale = 0;
 			gameIsPaused = true;
-			gameMusic.Pause();
+			gameMusic.Stop();
 			win_menu.active = true;
 			carrotsAnswer2.text = "Got " + player.playerScore.ToString() + " carrots!";
-			if(count_eggs_received < 3)
+			if (count_eggs_received < 3)
 			{
 				totalEggsText.color = Color.yellow;
-			} else
+			}
+			else
 			{
 				totalEggsText.color = Color.green;
 			}
 			totalEggsText.text = "Got rating " + count_eggs_received.ToString() + "!";
 		}
-	}	
+	}
 
 	// Awake
 	private void Awake()
@@ -84,17 +93,23 @@ public class GameManager : MonoBehaviour
 		egg2Text.text = ((int)EggsLife.egg2).ToString() + "s";
 		egg3Text.text = ((int)EggsLife.egg3).ToString() + "s";
 		Time.timeScale = 1;
+		carrots_needed_to_finish.text = "0/3";
+		carrots_needed_to_finish.color = Color.red;
 	}
 
 	// Start
 	private void Start()
 	{
-		gameMusic = GetComponent<AudioSource>();
+		var audio_sources = GetComponents<AudioSource>();
+		gameMusic = audio_sources[0];
 		gameMusic.PlayOneShot(get_audio);
 		pause_menu.active = false;
 		StartCoroutine(time());
 		lose_menu.active = false;
 		win_menu.active = false;
+		winSound = audio_sources[1];
+		won = false;
+		lost = false;
 	}
 
 	// Update
@@ -105,6 +120,29 @@ public class GameManager : MonoBehaviour
 		update_score();
 		modify_eggs();
 		win();
+		how_many_carrots_to_win();
+	}
+
+	// Display how many carrots are needed to win
+	void how_many_carrots_to_win()
+	{
+		if(player.playerScore == 0)
+		{
+			carrots_needed_to_finish.text = "0/3";
+			carrots_needed_to_finish.color = Color.red;
+		} else if(player.playerScore == 1)
+		{
+			carrots_needed_to_finish.text = "1/3";
+			carrots_needed_to_finish.color = Color.yellow;
+		} else if(player.playerScore == 2)
+		{
+			carrots_needed_to_finish.text = "2/3";
+			carrots_needed_to_finish.color = Color.yellow;
+		} else
+		{
+			carrots_needed_to_finish.text = "3/3";
+			carrots_needed_to_finish.color = Color.green;
+		}
 	}
 
 	// Modify text colors based on seconds left
@@ -159,9 +197,14 @@ public class GameManager : MonoBehaviour
 	// Lose game
 	private void loseLevel()
 	{
+		if (lost)
+			return;
+
+		lost = true;
 		Time.timeScale = 0;
 		gameIsPaused = true;
-		gameMusic.Pause();
+		gameMusic.Stop();
+		gameMusic.PlayOneShot(lose_sound);
 		lose_menu.active = true;
 		carrotsAnswer.text = "Got " + player.playerScore.ToString() + " carrots!";
 	}

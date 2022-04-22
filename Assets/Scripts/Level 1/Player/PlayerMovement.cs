@@ -46,6 +46,9 @@ public class PlayerMovement : MonoBehaviour
 	// Score
 	public int playerScore = 0;
 
+	// Win
+	public bool is_at_the_exit = false;
+
 	// Get components
 	private void Awake()
 	{
@@ -119,7 +122,6 @@ public class PlayerMovement : MonoBehaviour
 			else
 			{
 				body.velocity = new Vector2(body.velocity.x, playerJumpForce);
-				playerAnimator.SetTrigger("Jumping");
 				boolGrounded = false;
 				playerEnergy -= energyConsumptionPerJump;
 			}
@@ -151,11 +153,18 @@ public class PlayerMovement : MonoBehaviour
 		notEnoughEnergyError.alpha = 0;
 	}
 
+	// Update color to reflect tiredness
+	private void update_moving_color()
+	{
+		playerSprite.color = new Color(255f - energySlider.value, energySlider.value * 255f, energySlider.value * 255f);
+	}
+
 	// Movement & facing direction
 	private void movement()
 	{
 		maintainDirection();
 		moveToInput();
+		update_moving_color();
 	}
 
 	// Execute animations
@@ -165,12 +174,24 @@ public class PlayerMovement : MonoBehaviour
 		playerAnimator.SetBool("Grounded", boolGrounded);
 	}
 
-	// Check ground collision
+	// Check ground collision && exit collision
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
 		if(collision.gameObject.tag == "Ground")
 		{
 			boolGrounded = true;
+		} else if(collision.gameObject.tag == "ExitLevel")
+		{
+			is_at_the_exit = true;
+		}
+	}
+
+	// Check if not touching exit
+	private void OnCollisionExit2D(Collision2D collision)
+	{
+		if (collision.gameObject.tag == "ExitLevel")
+		{
+			is_at_the_exit = false;
 		}
 	}
 
@@ -184,6 +205,17 @@ public class PlayerMovement : MonoBehaviour
 			playerEnergy = (playerEnergy + CarrotEnergy);
 			if (playerEnergy > 1f)
 				playerEnergy = 1f;
+		} else if (collision.gameObject.tag == "ExitLevel")
+		{
+			is_at_the_exit = true;
+		}
+	}
+
+	private void OnTriggerExit2D(Collider2D collision)
+	{
+		if (collision.gameObject.tag == "ExitLevel")
+		{
+			is_at_the_exit = false;
 		}
 	}
 
