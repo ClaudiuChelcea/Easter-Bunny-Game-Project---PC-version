@@ -49,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
 	// Win
 	public bool is_at_the_exit = false;
 
+	// Sounds
+	private AudioSource chew_sound;
+
 	// Get components
 	private void Awake()
 	{
@@ -60,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
 		default_speed = speed;
 		notEnoughEnergyError.alpha = 0f;
 		boolGrounded = true;
+		chew_sound = GetComponent<AudioSource>();
 	}
 	
 	// Face the walking direction
@@ -203,6 +207,7 @@ public class PlayerMovement : MonoBehaviour
 			Destroy(collision.gameObject);
 			++playerScore;
 			playerEnergy = (playerEnergy + CarrotEnergy);
+			chew_sound.Play();
 			if (playerEnergy > 1f)
 				playerEnergy = 1f;
 		} else if (collision.gameObject.tag == "ExitLevel")
