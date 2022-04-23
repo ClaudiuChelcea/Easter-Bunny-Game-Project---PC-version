@@ -61,8 +61,8 @@
     <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Level 1\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuGameManager.cs" />
-    <Compile Include="Assets\boulderScript.cs" />
-    <Compile Include="Assets\TextDisappear.cs" />
+    <Compile Include="Assets\Scripts\Level 1\Player\boulderScript.cs" />
+    <Compile Include="Assets\Scripts\Level 1\Player\TextDisappear.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

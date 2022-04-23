@@ -26,7 +26,7 @@ public class boulderScript : MonoBehaviour
                 if (start > startAfter)
                 {
                         this.transform.RotateAroundLocal(-Vector3.forward, 1f * Time.deltaTime);
-                        this.rigidbody.velocity = new Vector2(Time.deltaTime * boulderSpeed, rigidbody.velocity.y);
+                        this.rigidbody.velocity = new Vector2(boulderSpeed, rigidbody.velocity.y);
                 }
         }
 
