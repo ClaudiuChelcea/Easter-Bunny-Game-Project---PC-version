@@ -56,11 +56,13 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Level 1\Pickup\CarrotScript.cs" />
     <Compile Include="Assets\Scripts\Level 1\Game manager\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\Level 1\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MainMenuGameManager.cs" />
-    <Compile Include="Assets\Scripts\Level 1\Pickup\CarrotScript.cs" />
-    <Compile Include="Assets\Scripts\Main Menu\MainMenuManager.cs" />
+    <Compile Include="Assets\boulderScript.cs" />
+    <Compile Include="Assets\TextDisappear.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

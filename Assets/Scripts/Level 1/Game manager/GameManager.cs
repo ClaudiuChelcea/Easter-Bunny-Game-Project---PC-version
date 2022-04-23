@@ -121,6 +121,9 @@ public class GameManager : MonoBehaviour
 		modify_eggs();
 		win();
 		how_many_carrots_to_win();
+
+		if(player.isDead)
+			loseLevel();
 	}
 
 	// Display how many carrots are needed to win
@@ -277,7 +280,7 @@ public class GameManager : MonoBehaviour
 	// Restart button
 	public void restartLevel()
 	{
-		SceneManager.LoadScene("Level 1");
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		resumeLevel();
 	}
 

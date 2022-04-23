@@ -49,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
 	// Win
 	public bool is_at_the_exit = false;
 
+	// Lose
+	public bool isDead = false;
+
 	// Sounds
 	private AudioSource chew_sound;
 
@@ -202,7 +205,7 @@ public class PlayerMovement : MonoBehaviour
 	// Triggers
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if(collision.gameObject.tag == "Carrot")
+		if (collision.gameObject.tag == "Carrot")
 		{
 			Destroy(collision.gameObject);
 			++playerScore;
@@ -213,6 +216,11 @@ public class PlayerMovement : MonoBehaviour
 		} else if (collision.gameObject.tag == "ExitLevel")
 		{
 			is_at_the_exit = true;
+		}
+		else if (collision.gameObject.tag == "Boulder")
+		{
+			Destroy(this.gameObject);
+			isDead = true;
 		}
 	}
 

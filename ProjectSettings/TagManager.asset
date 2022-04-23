@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Carrot
   - ExitLevel
+  - Boulder
   layers:
   - Default
   - TransparentFX
