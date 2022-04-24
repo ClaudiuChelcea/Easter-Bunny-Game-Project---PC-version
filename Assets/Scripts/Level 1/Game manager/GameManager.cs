@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -52,9 +53,19 @@ public class GameManager : MonoBehaviour
 			yield return new WaitForSeconds(1);
 		}
 	}
+	
 	void timeCount()
 	{
 		time_spent_in_level += 1;
+	}
+
+	// Pause game
+	public void PauseGameButton()
+	{
+		if (gameIsPaused == false)
+			Pause();
+		else
+			resumeLevel();
 	}
 
 	// Check win
@@ -81,6 +92,18 @@ public class GameManager : MonoBehaviour
 				totalEggsText.color = Color.green;
 			}
 			totalEggsText.text = "Got rating " + count_eggs_received.ToString() + "!";
+
+			// Write output to file
+			if (File.Exists("Level " + SceneManager.GetActiveScene().buildIndex + " stats.txt"))
+			{
+				int prev_rating = int.Parse(File.ReadAllText("Level " + SceneManager.GetActiveScene().buildIndex + " stats.txt"));
+				if (count_eggs_received > prev_rating)
+					File.WriteAllText("Level " + SceneManager.GetActiveScene().buildIndex + " stats.txt", count_eggs_received.ToString());
+			}
+			else
+			{
+				File.WriteAllText("Level " + SceneManager.GetActiveScene().buildIndex + " stats.txt", count_eggs_received.ToString());
+			}
 		}
 	}
 
@@ -261,11 +284,16 @@ public class GameManager : MonoBehaviour
 		}
 		else if (Input.GetKeyDown(KeyCode.Escape) == true && gameIsPaused == false)
 		{
-			Time.timeScale = 0;
-			gameIsPaused = true;
-			gameMusic.Pause();
-			pause_menu.active = true;
+			Pause();
 		}
+	}
+
+	private void Pause()
+	{
+		Time.timeScale = 0;
+		gameIsPaused = true;
+		gameMusic.Pause();
+		pause_menu.active = true;
 	}
 
 	// Resume button
